@@ -11,5 +11,5 @@ variable "image_name" {
 variable "docker_port" {
   description = "Puerto que se expondrá en el contenedor"
   type        = number
-  default     = 8080  # Puerto predeterminado
+  default     = 8082  # Puerto predeterminado
 }
