@@ -27,11 +27,13 @@ pipeline {
         }
         stage('Initialize Terraform') {
             steps {
+                 dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
                 script {
                     // Inicializar Terraform
                     sh 'terraform init -input=false'
                 }
-            }
+              }
+          }
         }
 
         stage('Apply Terraform') {
