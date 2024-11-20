@@ -27,7 +27,7 @@ resource "docker_image" "my_app_image" {
 
 # Recurso del contenedor Docker: Define el contenedor que se va a ejecutar a partir de la imagen creada
 resource "docker_container" "my_app_container" {
-  image = docker_image.my_app_image.latest  # Usamos la última versión de la imagen creada previamente
+  image = docker_image.my_app_image.name  # Usamos la última versión de la imagen creada previamente
   name  = var.image_name  # Usamos la variable 'image_name' para el nombre del contenedor
 
   # Configuración de puertos: Exponemos el puerto 8082 del contenedor hacia el host
