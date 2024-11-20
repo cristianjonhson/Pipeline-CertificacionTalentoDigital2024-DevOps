@@ -5,19 +5,34 @@ pipeline {
         TF_VERSION = '1.9.8'
         TF_BIN_DIR = "/var/jenkins_home/bin"
         TF_PATH = "${TF_BIN_DIR}/terraform"
-       }  
-   stages {
+    }
+
+    stages {
+
+         stage('Clean Terraform Cache') {
+            steps {
+                script {
+                    // Limpiar cualquier instalación anterior de Terraform
+                    echo 'Cleaning previous Terraform installations...'
+
+                    // Eliminar el binario de Terraform si existe en el directorio /var/jenkins_home/bin
+                    sh 'rm -f /var/jenkins_home/bin/terraform'
+
+                    // También se puede limpiar cualquier configuración de Terraform en el directorio de Jenkins (opcional)
+                    sh 'rm -rf ~/.terraform.d/'
+                }
+            }
+        }
+        
         stage('Install Terraform') {
             steps {
                 script {
                     // Crear el directorio bin en el directorio HOME si no existe
                     sh 'mkdir -p $TF_BIN_DIR'
-                    // Descargar la versión correcta de Terraform (1.5.0)
+                    // Descargar la versión correcta de Terraform
                     sh "curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
                     // Descomprimir Terraform y mover al directorio bin
                     sh "unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $TF_BIN_DIR"
-                    // Asegurarse de que la versión correcta de terraform esté en el PATH
-                    sh "export PATH=$TF_BIN_DIR:$PATH"
                     // Verificar que terraform esté en el directorio correcto
                     sh "ls -la $TF_BIN_DIR"
                 }
