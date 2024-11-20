@@ -6,6 +6,10 @@ pipeline {
         TF_BIN_DIR = "${env.HOME}/bin"
     }
 
+    tools {
+        terraform 'terraform1'
+    }
+
     stages {
         stage('Install Terraform') {
             steps {
@@ -21,17 +25,34 @@ pipeline {
                 }
             }
         }
+
+        stage('Verify Terraform Version') {
+            steps {
+                script {
+                    // Verificar la versión de Terraform instalada
+                    def terraformVersion = sh(script: 'terraform version -json', returnStdout: true).trim()
+                    def expectedVersion = "v${TF_VERSION}"
+                    
+                    if (!terraformVersion.contains(expectedVersion)) {
+                        error "Terraform version does not match the expected version: ${expectedVersion}. Found: ${terraformVersion}"
+                    } else {
+                        echo "Terraform version ${terraformVersion} matches the expected version."
+                    }
+                }
+            }
+        }
+
         stage('Initialize Terraform') {
             steps {
-                 dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
-                script {
-                    // Eliminar el archivo de bloqueo de dependencias
-                    sh 'rm -f .terraform.lock.hcl'
-                    // Inicializar Terraform
-                    sh 'terraform init -input=false'
+                dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
+                    script {
+                        // Eliminar el archivo de bloqueo de dependencias
+                        sh 'rm -f .terraform.lock.hcl'
+                        // Inicializar Terraform
+                        sh 'terraform init -input=false'
+                    }
                 }
-              }
-          }
+            }
         }
 
         stage('Apply Terraform') {
