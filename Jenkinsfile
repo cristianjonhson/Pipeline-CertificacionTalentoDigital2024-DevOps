@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        TF_VERSION = '1.9.8'
+        TF_VERSION = 'v1.9.8.'
         TF_BIN_DIR = "/var/jenkins_home/bin"
         TF_PATH = "${TF_BIN_DIR}/terraform"
     }
