@@ -7,7 +7,7 @@ pipeline {
     }
     
     tools {
-        terraform 'terraform'
+        terraform 'terraform1'
     }
 
     stages {
