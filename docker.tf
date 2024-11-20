@@ -1,6 +1,7 @@
 # Proveedor de Docker: Se define el proveedor para gestionar Docker desde Terraform
 # En este caso, estamos utilizando el socket Unix de Docker en el sistema local
 provider "docker" {
+  version = "~> 2.25.0"
   host = "unix:///var/run/docker.sock"  # Dirección del socket de Docker en el sistema local
 }
 
