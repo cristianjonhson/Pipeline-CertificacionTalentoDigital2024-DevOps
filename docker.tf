@@ -15,7 +15,8 @@ provider "docker" {
 
 # Recurso de la imagen Docker: Define cómo se debe construir y etiquetar la imagen de Docker
 resource "docker_image" "my_app_image" {
-  name = var.image_name   # Usamos la variable 'image_name' para nombrar la imagen Docker
+  name     = var.image_name  # Usamos la variable 'image_name' para nombrar la imagen Docker
+  platform = "linux/amd64"   # Especifica que la plataforma debe ser linux_amd64
 
   # Bloque de construcción de la imagen Docker
   build {
