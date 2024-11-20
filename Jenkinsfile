@@ -29,6 +29,8 @@ pipeline {
             steps {
                  dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
                 script {
+                    // Eliminar el archivo de bloqueo de dependencias
+                    sh 'rm -f .terraform.lock.hcl'
                     // Inicializar Terraform
                     sh 'terraform init -input=false'
                 }
