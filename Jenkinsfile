@@ -57,10 +57,12 @@ pipeline {
 
         stage('Apply Terraform') {
             steps {
+                 dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
                 script {
                     // Aplicar la configuración de Terraform para crear la imagen y el contenedor Docker
                     sh "$TF_PATH apply -auto-approve"
                 }
+              }
             }
         }
     }
