@@ -49,6 +49,18 @@ pipeline {
             }
         }
 
+         stage('Force Provider Lock') {
+            steps {
+                dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
+                    script {
+                        echo 'Forcing the download and lock of the provider...'
+                        // Forzar la descarga del proveedor especificado para la plataforma linux_amd64
+                        sh "$TF_PATH providers lock -platform=linux_amd64"
+                    }
+                }
+            }
+        }
+
         stage('Initialize Terraform') {
             steps {
                 
