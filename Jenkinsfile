@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        TF_VERSION = '1.5.0'
+        TF_VERSION = '1.9.8'
         TF_BIN_DIR = "${env.HOME}/bin"
     }
 
