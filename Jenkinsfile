@@ -5,10 +5,6 @@ pipeline {
         TF_VERSION = '1.5.0'
         TF_BIN_DIR = "${env.HOME}/bin"
     }
-    
-    tools {
-        terraform1 'terraform'
-    }
 
     stages {
         stage('Install Terraform') {
