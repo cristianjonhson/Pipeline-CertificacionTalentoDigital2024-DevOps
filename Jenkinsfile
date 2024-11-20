@@ -55,10 +55,9 @@ pipeline {
                 script {
                     echo 'Adding Jenkins user to Docker group...'
                     // Adding Jenkins user to the Docker group
-                    sh 'sudo groupadd docker || true'  // Group might already exist, so use `|| true` to avoid errors
-                    sh 'sudo usermod -aG docker jenkins'
-                    // Restart Jenkins for changes to take effect
-                    sh 'sudo systemctl restart jenkins'
+                    sh 'groupadd docker || true'  // Group might already exist, so use `|| true` to avoid errors
+                    sh 'usermod -aG docker jenkins'
+                    
                 }
             }
         }
