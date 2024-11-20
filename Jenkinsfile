@@ -3,25 +3,23 @@ pipeline {
 
     environment {
         TF_VERSION = '1.9.8'
-        TF_BIN_DIR = "${env.HOME}/bin"
-    }
-
-    tools {
-        terraform 'terraform1'
-    }
-
-    stages {
+        TF_BIN_DIR = "/var/jenkins_home/bin"
+        TF_PATH = "${TF_BIN_DIR}/terraform"
+       }  
+   stages {
         stage('Install Terraform') {
             steps {
                 script {
                     // Crear el directorio bin en el directorio HOME si no existe
-                    sh 'mkdir -p $HOME/bin'
-                    // Descargar Terraform
-                    sh 'curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip'
-                    // Descomprimir Terraform con la opción -o para sobrescribir sin preguntar, y Mover terraform al directorio bin
-                    sh 'unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $TF_BIN_DIR'
-                    // Agregar terraform al PATH
-                    sh 'export PATH=$TF_BIN_DIR:$PATH'
+                    sh 'mkdir -p $TF_BIN_DIR'
+                    // Descargar la versión correcta de Terraform (1.5.0)
+                    sh "curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip"
+                    // Descomprimir Terraform y mover al directorio bin
+                    sh "unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $TF_BIN_DIR"
+                    // Asegurarse de que la versión correcta de terraform esté en el PATH
+                    sh "export PATH=$TF_BIN_DIR:$PATH"
+                    // Verificar que terraform esté en el directorio correcto
+                    sh "ls -la $TF_BIN_DIR"
                 }
             }
         }
@@ -29,10 +27,12 @@ pipeline {
         stage('Verify Terraform Version') {
             steps {
                 script {
-                    // Verificar la versión de Terraform instalada
-                    def terraformVersion = sh(script: 'terraform version -json', returnStdout: true).trim()
+                    // Verificar la versión de Terraform usando el binario recién instalado
+                    def terraformVersion = sh(script: "$TF_PATH version -json", returnStdout: true).trim()
+                    echo "Terraform version installed: ${terraformVersion}"
                     def expectedVersion = "v${TF_VERSION}"
-                    
+
+                    // Compara las versiones
                     if (!terraformVersion.contains(expectedVersion)) {
                         error "Terraform version does not match the expected version: ${expectedVersion}. Found: ${terraformVersion}"
                     } else {
@@ -49,7 +49,7 @@ pipeline {
                         // Eliminar el archivo de bloqueo de dependencias
                         sh 'rm -f .terraform.lock.hcl'
                         // Inicializar Terraform
-                        sh 'terraform init -input=false'
+                        sh "$TF_PATH init -input=false"
                     }
                 }
             }
@@ -59,7 +59,7 @@ pipeline {
             steps {
                 script {
                     // Aplicar la configuración de Terraform para crear la imagen y el contenedor Docker
-                    sh 'terraform apply -auto-approve'
+                    sh "$TF_PATH apply -auto-approve"
                 }
             }
         }
