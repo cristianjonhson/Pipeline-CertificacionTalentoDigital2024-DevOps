@@ -14,10 +14,8 @@ pipeline {
                     sh 'mkdir -p $HOME/bin'
                     // Descargar Terraform
                     sh 'curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip'
-                    // Descomprimir Terraform
-                    sh 'unzip terraform_${TF_VERSION}_linux_amd64.zip'
-                    // Mover terraform al directorio bin
-                    sh 'mv terraform $TF_BIN_DIR/'
+                    // Descomprimir Terraform con la opción -o para sobrescribir sin preguntar, y Mover terraform al directorio bin
+                    sh 'unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $TF_BIN_DIR'
                     // Agregar terraform al PATH
                     sh 'export PATH=$TF_BIN_DIR:$PATH'
                 }
