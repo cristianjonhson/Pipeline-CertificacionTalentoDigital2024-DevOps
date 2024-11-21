@@ -13,26 +13,27 @@ provider "docker" {
   host = "unix:///var/run/docker.sock"  # Dirección del socket de Docker en el sistema local
 }
 
-# Recurso de la imagen Docker personalizada: Construir la imagen desde el Dockerfile
+# Recurso para construir la imagen Docker
 resource "docker_image" "my_app_image" {
-  name     = var.image_name  # Usamos la variable 'image_name' para nombrar la imagen Docker
-  platform = "linux/amd64"   # Especifica que la plataforma debe ser linux/amd64
+  name     = var.image_name  # Nombre de la imagen que se creará
+  platform = "linux/amd64"   # Plataforma de la imagen
+
+  # Bloque para construir la imagen
+  build {
+    context    = "."  # Contexto donde se encuentra el Dockerfile
+    dockerfile = "./Dockerfile"  # Ruta al Dockerfile
+  }
 }
 
-# Recurso del contenedor Docker: Define el contenedor que se va a ejecutar a partir de la imagen creada
+# Recurso para crear un contenedor desde la imagen construida
 resource "docker_container" "my_app_container" {
-  image = docker_image.my_app_image.name  # Usamos la última versión de la imagen creada previamente
-  name  = var.image_name  # Usamos la variable 'image_name' para el nombre del contenedor
+  name  = var.image_name   # Nombre del contenedor
 
-# Bloque de construcción de la imagen Docker usando el Dockerfile
-  build {
-    context = "."  # El contexto es el directorio actual (donde se encuentra el Dockerfile)
-    dockerfile = "./Dockerfile"  # Especificamos la ubicación del Dockerfile
-  }
+  # Usamos la imagen creada previamente
+  image = docker_image.my_app_image.name  # Imagen construida en el paso anterior
 
-  # Configuración de puertos: Exponemos el puerto 8082 del contenedor hacia el host
   ports {
-    internal = var.docker_port   # Usamos la variable 'docker_port' para el puerto interno
-    external = var.docker_port   # Usamos la misma variable para el puerto externo
+    internal = var.docker_port  # Puerto interno del contenedor
+    external = var.docker_port  # Puerto que se expondrá en el host
   }
 }
