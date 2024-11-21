@@ -120,7 +120,7 @@ pipeline {
         script {
           // Asegúrate de que el ID fue encontrado
           if (CONTAINER_ID) {
-            sh "docker exec -it ${CONTAINER_ID} echo '¡Hola desde Jenkins!'"
+            sh "docker exec  ${CONTAINER_ID} echo '¡Hola desde Jenkins!'"
           } else {
             error "No se pudo encontrar el contenedor con nombre 'jenkins'."
           }
@@ -140,7 +140,7 @@ pipeline {
       }
     }*/
 
-    stage('Initialize Terraform') {
+    stage('Initialize Terraform') {   
       steps {
         script {
           // Inicializa Terraform eliminando archivos de bloqueo anteriores
@@ -151,6 +151,11 @@ pipeline {
     }
 
     stage('Plan Terraform Changes') {
+       when {
+        expression {
+          params.INSTALL_TERRAFORM
+        } // Solo ejecuta esta etapa si INSTALL_TERRAFORM es verdadero
+      }
       steps {
         // Crea el plan de ejecución de Terraform
         sh "$TF_PATH plan -out=tfplan -input=false" // Genera el plan y lo guarda en un archivo
@@ -158,6 +163,11 @@ pipeline {
     }
 
     stage('Apply Terraform') {
+       when {
+        expression {
+          params.INSTALL_TERRAFORM
+        } // Solo ejecuta esta etapa si INSTALL_TERRAFORM es verdadero
+      }
       steps {
         script {
           // Aplica los cambios definidos en el plan de Terraform
@@ -185,7 +195,7 @@ pipeline {
   post {
     always {
       // Mensaje que siempre se muestra al final de la ejecución
-      echo 'Pipeline execution completed.'
+      echo 'Pipeline finalizado.'
     }
     success {
       // Mensaje que se muestra si la ejecución fue exitosa
@@ -193,7 +203,7 @@ pipeline {
     }
     failure {
       // Mensaje que se muestra si la ejecución falló
-      echo 'Pipeline failed. Check the logs for more details.'
+      echo 'Pipeline falló. Revisar los logs.'
     }
   }
 }
