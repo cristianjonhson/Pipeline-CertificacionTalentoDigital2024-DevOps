@@ -43,20 +43,12 @@ pipeline {
           // Verifica si Terraform ya está instalado
           if (!fileExists("$TF_PATH")) {
             echo 'Installing Terraform...'
-            sh ""
-            "
-            mkdir - p $TF_BIN_DIR // Crea el directorio si no existe
-            curl - LO https: //releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip // Descarga el binario
-              unzip - o terraform_$ {
-                TF_VERSION
-              }
-            _linux_amd64.zip - d $TF_BIN_DIR // Descomprime el binario en el directorio destino
-            rm terraform_$ {
-              TF_VERSION
-            }
-            _linux_amd64.zip // Elimina el archivo ZIP descargado
-            ""
-            "
+            sh """
+            mkdir -p $TF_BIN_DIR
+            curl -LO https://releases.hashicorp.com/terraform/${TF_VERSION}/terraform_${TF_VERSION}_linux_amd64.zip
+            unzip -o terraform_${TF_VERSION}_linux_amd64.zip -d $TF_BIN_DIR
+            rm terraform_${TF_VERSION}_linux_amd64.zip
+            """
             echo 'Terraform installed successfully.'
           } else {
             // Mensaje si Terraform ya está instalado
@@ -84,19 +76,13 @@ pipeline {
 
           // Validar si el contenedor existe
           if (containerId) {
-            sh ""
-            "
-            docker exec - u root $ {
-              containerId
-            }
-            /bin/sh - c '
-            chown root: docker /
-              var / run / docker.sock &&
-              chmod 666 /
-              var / run / docker.sock &&
-              usermod - aG docker jenkins '
-            ""
-            "
+            sh """
+            docker exec -u root ${containerId} /bin/sh -c '
+              chown root:docker /var/run/docker.sock &&
+              chmod 666 /var/run/docker.sock &&
+              usermod -aG docker jenkins
+            '
+            """
           } else {
             error "No se encontró ningún contenedor basado en 'contenedor_jenkins-jenkins'."
           }
