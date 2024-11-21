@@ -22,6 +22,7 @@ resource "docker_image" "my_app_image" {
   build {
     context    = "."  # Contexto donde se encuentra el Dockerfile
     dockerfile = "./Dockerfile"  # Ruta al Dockerfile
+    no_cache   = true  # Deshabilita el caché de Docker
   }
 }
 
