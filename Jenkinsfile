@@ -128,7 +128,7 @@ pipeline {
       }
     }
 
-    stage('Force Provider Lock') {
+     /*stage('Force Provider Lock') {
       steps {
         dir('Pipeline-CertificacionTalentoDigital2024-DevOps') {
           script {
@@ -138,7 +138,7 @@ pipeline {
           }
         }
       }
-    }
+    }*/
 
     stage('Initialize Terraform') {
       steps {
